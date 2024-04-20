@@ -1,5 +1,5 @@
-import Navbar from "@/components/Navbar";
-import Sidebar from "@/components/Sidebar";
+import Navbar from "@/components/layout/Navbar";
+import Sidebar from "@/components/layout/sidebar/Sidebar";
 import { ReactNode } from "react";
 
 const Layout = ({ children }: { children: ReactNode }) => {
