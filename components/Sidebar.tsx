@@ -9,7 +9,7 @@ const Sidebar = () => {
   const pathname = usePathname();
 
   const checkIsActive = (link: string) => {
-    return pathname === link || pathname.startsWith(link);
+    return pathname === link && pathname.startsWith(link);
   };
 
   return (
