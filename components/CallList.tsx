@@ -2,20 +2,22 @@
 
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { isEmpty } from "lodash";
 import { Call, CallRecording } from "@stream-io/video-react-sdk";
-import { useGetCalls } from "@/hooks/useGetCalls";
 import MeetingCard from "./meeting/MeetingCard";
 import Loader from "./ui/Loader";
+import { useToast } from "./ui/use-toast";
+import { useGetCalls } from "@/hooks/useGetCalls";
 
 interface CallListProps {
   type: "ended" | "upcoming" | "recordings";
 }
 
-const CallList = ({ type = "recordings" }: CallListProps) => {
+const CallList = ({ type }: CallListProps) => {
   const router = useRouter();
+  const { toast } = useToast();
 
   const { endedCalls, upcomingCalls, callRecordings, isLoading } =
     useGetCalls();
@@ -44,6 +46,28 @@ const CallList = ({ type = "recordings" }: CallListProps) => {
     return { calls, message };
   };
 
+  useEffect(() => {
+    const fetchRecordings = async () => {
+      try {
+        const callData = await Promise.all(
+          callRecordings.map((item) => item.queryRecordings())
+        );
+
+        const recordings = callData
+          .filter((call) => call.recordings.length > 0)
+          .flatMap((item) => item.recordings);
+
+        setRecordings(recordings);
+      } catch (error) {
+        toast({ title: "Try again later!" });
+      }
+    };
+
+    if (type === "recordings") {
+      fetchRecordings();
+    }
+  }, [type, callRecordings, toast]);
+
   const calls = getCallsAndMessage()?.calls as Call[];
   const noCallsMessage = getCallsAndMessage()?.message;
 
@@ -65,11 +89,13 @@ const CallList = ({ type = "recordings" }: CallListProps) => {
                 : "/icons/recordings.svg"
             }
             title={
-              item.state.custom.description.substring(0, 26) || "No description"
+              item?.state?.custom.description.substring(0, 26) ||
+              item?.filename?.substring(0, 20) ||
+              "No description"
             }
             date={
-              item.state.startsAt?.toLocaleString() ||
-              item.start_time.toLocaleString()
+              item?.state?.startsAt?.toLocaleString() ||
+              item?.start_time.toLocaleString()
             }
             isPreviousMeeting={type === "ended"}
             buttonIcon1={type === "recordings" ? "/icons/play.svg" : undefined}
@@ -81,7 +107,7 @@ const CallList = ({ type = "recordings" }: CallListProps) => {
             }
             link={
               type === "recordings"
-                ? item.url
+                ? item?.url
                 : `${process.env.NEXT_PUBLIC_BASE_URL}/meeting/${item.id}`
             }
           />
