@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { useUser } from "@clerk/nextjs";
 import { Call, useStreamVideoClient } from "@stream-io/video-react-sdk";
 import { useToast } from "@/components/ui/use-toast";
-import HomeCard from "./HomeCard";
+import HomeCard from "../HomeCard";
 import MeetingModal from "./MeetingModal";
 
 const MeetingTypeList = () => {
