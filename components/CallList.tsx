@@ -89,9 +89,9 @@ const CallList = ({ type }: CallListProps) => {
                 : "/icons/recordings.svg"
             }
             title={
-              item?.state?.custom.description.substring(0, 26) ||
+              item?.state?.custom?.description?.substring(0, 26) ||
               item?.filename?.substring(0, 20) ||
-              "No description"
+              "Personal Meeting"
             }
             date={
               item?.state?.startsAt?.toLocaleString() ||

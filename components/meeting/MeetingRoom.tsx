@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import {
   CallControls,
   CallParticipantsList,
@@ -20,6 +20,7 @@ import Loader from "../ui/Loader";
 export type CallLayoutType = "grid" | "speaker-left" | "speaker-right";
 
 const MeetingRoom = () => {
+  const router = useRouter();
   const searchParams = useSearchParams();
   const isPersonalRoom = !!searchParams.get("personal");
 
@@ -59,7 +60,8 @@ const MeetingRoom = () => {
         </div>
       </div>
       <div className="fixed bottom-0 flex w-full items-center justify-center gap-5 flex-wrap">
-        <CallControls />
+        <CallControls onLeave={() => router.push("/")} />
+
         <CallLayoutDropdown setLayout={setLayout} />
         <CallStatsButton />
         <button onClick={() => setShowParticipants((prev) => !prev)}>
