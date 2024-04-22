@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useSearchParams } from "next/navigation";
 import {
   CallControls,
   CallParticipantsList,
@@ -11,10 +12,14 @@ import {
 import CallLayoutDropdown from "./CallLayoutDropdown";
 import { cn } from "@/lib/utils";
 import { Users } from "lucide-react";
+import EndCallButton from "./EndCallButton";
 
 export type CallLayoutType = "grid" | "speaker-left" | "speaker-right";
 
 const MeetingRoom = () => {
+  const searchParams = useSearchParams();
+  const isPersonalRoom = !!searchParams.get("personal");
+
   const [layout, setLayout] = useState<CallLayoutType>("speaker-left");
   const [showParticipants, setShowParticipants] = useState(false);
 
@@ -52,6 +57,7 @@ const MeetingRoom = () => {
             <Users size={20} className="text-white" />
           </div>
         </button>
+        {!isPersonalRoom && <EndCallButton />}
       </div>
     </section>
   );
